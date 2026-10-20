@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>وقتي - نظام إدارة الحضور والإنصراف السحابي الذكي | WAQTY</title>
+  <meta name="description" content="منظومة وقتي الذكية لإدارة الحضور والإنصراف ومسير الرواتب بدون أجهزة بصمة مادية، بالاعتماد على السياج الجغرافي GPS والصورة الحية بالكاميرا." />
+
+  <!-- Google Fonts: Cairo & Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Cairo', 'Tajawal', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              400: '#34d399',
+              500: '#10b981',
+              DEFAULT: '#10b981',
+              dark: '#064e3b'
+            },
+            cyber: {
+              deep: '#070b12',
+              surface: '#0c1322',
+              card: '#0f182b',
+              cyan: '#0ea5e9'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js (Scroll-Driven 3D Engine) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-[#070b12] text-slate-100 selection:bg-emerald-500 selection:text-slate-950 font-sans">
+
+  <!-- ======================================================== -->
+  <!-- 3D Canvas Background Container -->
+  <!-- ======================================================== -->
+  <div id="webgl-container"></div>
+  <div class="cyber-bg-overlay"></div>
+
+  <!-- ======================================================== -->
+  <!-- 1. Floating Top Navigation Header -->
+  <!-- ======================================================== -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#070b12]/80 border-b border-white/5 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3.5 group flex-shrink-0">
+        <img src="logo-icon.png" alt="شعار وقتي WAQTY" class="h-12 w-auto object-contain drop-shadow-[0_0_12px_rgba(16,185,129,0.35)] transition-transform group-hover:scale-105" />
+        <div class="flex flex-col text-right">
+          <div class="flex items-center gap-2">
+            <span class="font-black text-xl sm:text-2xl text-white tracking-wide">وقتي <span class="text-emerald-400 font-mono text-base sm:text-lg font-bold">| WAQTY</span></span>
+          </div>
+          <span class="text-[11px] text-slate-400 font-medium whitespace-nowrap">نظام إدارة الحضور والإنصراف الذكي</span>
+        </div>
+      </a>
+
+      <!-- Quick Nav Links -->
+      <nav class="hidden xl:flex items-center gap-6 text-xs sm:text-sm font-semibold text-slate-300">
+        <a href="#comparison-section" class="hover:text-emerald-400 transition-colors">قبل وبعد وقتي</a>
+        <a href="#security-section" class="hover:text-emerald-400 transition-colors">منظومة الأمان</a>
+        <a href="#features-section" class="hover:text-emerald-400 transition-colors">المميزات</a>
+        <a href="#calculator-section" class="hover:text-emerald-400 transition-colors">حاسبة التوفير</a>
+        <a href="#pricing-section" class="hover:text-emerald-400 transition-colors">الباقات والأسعار</a>
+        <a href="#faq-section" class="hover:text-emerald-400 transition-colors">الأسئلة الشائعة</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <!-- Direct WhatsApp Support -->
+        <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D9%84%D8%AF%D9%8A%20%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%AD%D9%88%D9%84%20%D9%86%D8%B8%D8%A7%D9%85%20%D9%88%D9%82%D8%AA%D9%8A" target="_blank"
+           class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-400 text-xs font-bold transition-all">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>واتساب: 01093320211</span>
+        </a>
+
+        <!-- Direct Live App Link -->
+        <a href="https://mosaed-attendance.vercel.app/" target="_blank" rel="noopener noreferrer"
+           class="neon-glow-btn px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all">
+          <span>دخول النظام</span>
+          <i data-lucide="external-link" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- 2. MAIN 3D HERO VIEWPORT & SCROLL OVERLAY -->
+  <!-- ======================================================== -->
+  <section class="relative min-h-[92vh] pt-28 pb-16 flex flex-col justify-between z-10 pointer-events-none">
+    
+    <!-- Top Hero Info -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full pt-4 pointer-events-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Right Column: Text & Metrics (RTL Right) -->
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-bold mb-5 badge-glow">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>وداعاً لأجهزة البصمة المادية وأعطالها المتكررة</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.2] tracking-tight">
+            المنظومة السحابية الذكية<br />
+            <span class="text-gradient-emerald">لإدارة الحضور ومسير الرواتب</span>
+          </h1>
+
+          <p class="mt-5 text-base sm:text-lg text-slate-200 leading-relaxed max-w-xl font-medium">
+            حوّل هواتف موظفيك إلى أجهزة حضور ذكية غير قابلة للتلاعب بتقنية <strong class="text-emerald-400 font-bold">السياج الجغرافي (GPS)</strong> و<strong class="text-cyan-400 font-bold">الصورة الحية</strong>، مع أتمتة حساب الخصومات والإضافي ومسيرات الرواتب بضغطة زر.
+          </p>
+
+          <!-- Executive Hero Key Metrics -->
+          <div class="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3.5 max-w-xl">
+            <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 shadow-lg">
+              <div class="font-black text-emerald-400 text-xl font-mono">0 ج.م</div>
+              <div class="text-xs text-slate-200 font-bold mt-0.5">تكلفة أجهزة مادية</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 shadow-lg">
+              <div class="font-black text-cyan-400 text-xl font-mono">120 ثانية</div>
+              <div class="text-xs text-slate-200 font-bold mt-0.5">لتفعيل أي فرع جديد</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 shadow-lg">
+              <div class="font-black text-amber-400 text-xl font-mono">100%</div>
+              <div class="text-xs text-slate-200 font-bold mt-0.5">منع تبصيم الزملاء</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/10 shadow-lg">
+              <div class="font-black text-purple-400 text-xl font-mono">+85%</div>
+              <div class="text-xs text-slate-200 font-bold mt-0.5">وفر مالي تشغيلي</div>
+            </div>
+          </div>
+
+          <!-- Executive Hero CTAs -->
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <a href="https://mosaed-attendance.vercel.app/" target="_blank"
+               class="neon-glow-btn px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/20">
+              <span>ابدأ التجربة المجانية لشركتك</span>
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </a>
+            <a href="#calculator-section"
+               class="neon-outline-btn px-5 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2">
+              <span>احسب وفر مؤسستك المالي</span>
+              <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Left Column: 3D Smartphone Dedicated Showcase Viewport -->
+        <div class="hidden lg:flex lg:col-span-5 flex-col items-center justify-center min-h-[460px] relative pointer-events-none select-none py-6">
+          <!-- Ambient Glow Ring behind the 3D Phone -->
+          <div class="w-80 h-80 rounded-full bg-emerald-500/15 blur-3xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 animate-pulse"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Scroll Hint -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full pt-10 pointer-events-auto">
+      <div class="flex items-center justify-between gap-4">
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 px-3.5 py-2 rounded-xl bg-slate-900/80 border border-emerald-500/20 ">
+          <i data-lucide="chevrons-down" class="w-4 h-4 animate-bounce"></i>
+          <span>مرّر الصفحة للأسفل لتدوير الهاتف ثلاثي الأبعاد واستعراض مميزات النظام تلقائياً</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================ comparison-section======================================== -->
+  <!-- 3. SECTION 1: THE PAIN VS. THE SOLUTION (قبل وقتي vs بعد وقتي) -->
+  <!-- ======================================================== -->
+  <section id="comparison-section" class="relative z-10 py-24 border-t border-white/5 bg-[#070b12]/85">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16 section-spotlight">
+        <span class="px-4 py-1.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-bold uppercase tracking-wider badge-glow">
+          مقارنة جوهرية
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-5xl font-black text-white leading-tight">
+          أجهزة البصمة التقليدية <span class="text-slate-500 font-normal">vs.</span> <span class="text-gradient-emerald">منظومة وقتي الذكية</span>
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
+          لماذا تهاجر الشركات الحديثة من الأجهزة الصينية المعطلة إلى الأنظمة السحابية الذكية؟
+        </p>
+      </div>
+
+      <!-- Comparison Matrix -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        
+        <!-- The Pain (Traditional Hardware) -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-rose-500/25 relative overflow-hidden bg-gradient-to-b from-rose-950/15 via-slate-900/60 to-slate-900/60">
+          <div class="flex items-center justify-between pb-6 border-b border-rose-500/20 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-rose-500/15 text-rose-400 flex items-center justify-center font-bold text-xl">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white">معاناة أجهزة البصمة التقليدية</h3>
+                <span class="text-xs text-rose-400 font-semibold">تكاليف متراكمة وأخطاء تشغيلية مستمرة</span>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs font-bold">طريقة قديمة</span>
+          </div>
+
+          <ul class="space-y-4 text-xs sm:text-sm text-slate-300">
+            <li class="flex items-start gap-3">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block mb-0.5">تكاليف تأسيسية باهظة:</strong>
+                <span>سعر الجهاز الواحد يتراوح بين 200 إلى 500 دولار، تتضاعف مع كل فرع تفتحه شركتك.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block mb-0.5">أعطال متكررة وصيانة مكلفة:</strong>
+                <span>تآكل قارئ البصمة مع الوقت، انقطاع الكهرباء، وتوقف الجهاز لحين قدوم فني الصيانة.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block mb-0.5">طوابير وازدحام الصباح:</strong>
+                <span>تكدس الموظفين أمام الجهاز في دقائق الذروة، وما يسببه ذلك من توتر وتعطيل لبدء العمل.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block mb-0.5">عجز عن متابعة العمل الميداني:</strong>
+                <span>استحالة مراقبة مناديب المبيعات، الفنيين الميدانيين، أو المشرفين المتنقلين بين المواقع.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block mb-0.5">تبصيم الزملاء والتلاعب بالكروت:</strong>
+                <span>سهولة التلاعب بالكروت الممغنطة أو تسجيل الزملاء لبعضهم (Buddy Punching).</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block mb-0.5">شيتات إكسيل مبعثرة وحسابات مرهقة:</strong>
+                <span>إهدار أيام كاملة في تفريغ الـ USB وحساب ساعات التأخير والغياب يدوياً نهاية كل شهر.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- The Solution (WAQTY Smart System) -->
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl border-2 border-emerald-500/40 relative overflow-hidden bg-gradient-to-b from-emerald-950/20 via-slate-900/80 to-slate-900/80 shadow-2xl shadow-emerald-500/10">
+          <div class="flex items-center justify-between pb-6 border-b border-emerald-500/20 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center font-bold text-xl">
+                <i data-lucide="check-check" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white">حل وقتي السحابي المتكامل</h3>
+                <span class="text-xs text-emerald-400 font-semibold">أتمتة شاملة، أمان ثنائي، وتوفير تشغيلي هائل</span>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold">حل المستقبل ⭐</span>
+          </div>
+
+          <ul class="space-y-4 text-xs sm:text-sm text-slate-200 font-medium">
+            <li class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-emerald-300 block mb-0.5">صفر أجهزة مادية (Zero Hardware):</strong>
+                <span>هاتف الموظف فقط هو جهاز الحضور الذكي؛ وفر آلاف الجنيهات في شراء وصيانة الأجهزة.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-emerald-300 block mb-0.5">أمان ثنائي فوري (GPS + سيلفي حي):</strong>
+                <span>سياج جغرافي دقيق يمنع التسجيل خارج مقر العمل، وصورة شخصية حية لمنع التلاعب.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-emerald-300 block mb-0.5">سرعة فائقة (تسجيل في 3 ثوانٍ):</strong>
+                <span>كل موظف يسجل من جهازه الشخصي بلحظة واحدة؛ وداعاً لأي طوابير أو تزاحم عند المداخل.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-emerald-300 block mb-0.5">تغطية مركزية لجميع الفروع والمناديب:</strong>
+                <span>أضف 50 فرعاً وموقع عمل ميداني وراقب حضور وانصراف الجميع في لوحة تحكم واحدة.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-emerald-300 block mb-0.5">توسع فوري خلال دقيقتين فقط:</strong>
+                <span>افتتح فرعاً جديداً، حدد موقعه على الخريطة، وابدأ تسجيل الحضور فوراً بدون فنيين.</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-emerald-300 block mb-0.5">مسير رواتب آلي 100%:</strong>
+                <span>حساب التأخيرات، الغيابات، الإضافي، والسلف لحظياً مع استخراج مسيرات الرواتب بضغطة زر.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 4. SECTION 2: HOW ANTI-FRAUD & DUAL VERIFICATION WORKS -->
+  <!-- ======================================================== -->
+  <section id="security-section" class="relative z-10 py-24 border-t border-white/5 bg-[#070b12]/85">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 section-spotlight">
+        <span class="px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-wider badge-glow">
+          الأمان والمصداقية
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-5xl font-black text-white leading-tight">
+          منظومة التحقق الثنائي <span class="text-gradient-cyan">ومنع التلاعب</span>
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
+          كيف يضمن نظام وقتي بنسبة 100% أن الموظف متواجد بالفعل داخل مقر العمل وأن الشخص نفسه هو من يسجل؟
+        </p>
+      </div>
+
+      <!-- Security 3 Pillars Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+        
+        <!-- Security Pillar 1: Precision Geofencing -->
+        <div class="glass-panel p-6 sm:p-7 rounded-3xl border border-white/10 relative flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/10">
+              <i data-lucide="radar" class="w-7 h-7"></i>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-3">
+              <span>طبقة الحماية 1</span>
+            </div>
+            <h3 class="text-xl font-black text-white mb-3">السياج الجغرافي فائق الدقة (GPS)</h3>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed mb-4">
+              يقوم المدير بإسقاط دبوس الموقع على الخريطة وتحديد نطاق الأمان المعتمد بالأمتار (مثلاً 50 متراً أو 100 متر).
+            </p>
+            <ul class="text-xs sm:text-sm text-slate-100 font-medium space-y-3 mb-6">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                <span>قفل زر الحضور تلقائياً إذا خرج الموظف خارج النطاق.</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                <span>حماية ضد برامج تزييف المواقع (Mock Location Guards).</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                <span>دقة عالية تصل إلى 2 - 3 أمتار باستخدام إشارات GPS متعددة.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-emerald-500/30 text-xs text-emerald-300 font-mono font-bold shadow-md">
+            Status: Geofence Boundary Locked ✓
+          </div>
+        </div>
+
+        <!-- Security Pillar 2: Live Selfie Capture -->
+        <div class="glass-panel p-6 sm:p-7 rounded-3xl border border-white/10 relative flex flex-col justify-between hover:border-cyan-500/40 transition-all">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/10">
+              <i data-lucide="camera" class="w-7 h-7"></i>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold mb-3">
+              <span>طبقة الحماية 2</span>
+            </div>
+            <h3 class="text-xl font-black text-white mb-3">الالتقاط الحي للصورة والكاميرا</h3>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed mb-4">
+              إلزام الموظف بفتح كاميرا الهاتف الحية لالتقاط سيلفي مباشر في نفس ثانية تسجيل البصمة.
+            </p>
+            <ul class="text-xs sm:text-sm text-slate-100 font-medium space-y-3 mb-6">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                <span>منع رفع الصور نهائياً من الاستوديو أو معرض الصور.</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                <span>القضاء التام على تسجيل الزملاء لبعضهم (Buddy Punching).</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+                <span>إرفاق الصورة داخل سجل الحضور ليراجعها المدير بضغطة زر.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-cyan-500/30 text-xs text-cyan-300 font-mono font-bold shadow-md">
+            Status: Camera Live Stream Verified ✓
+          </div>
+        </div>
+
+        <!-- Security Pillar 3: Server Timestamp & Footprint -->
+        <div class="glass-panel p-6 sm:p-7 rounded-3xl border border-white/10 relative flex flex-col justify-between hover:border-purple-500/40 transition-all">
+          <div>
+            <div class="w-14 h-14 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/10">
+              <i data-lucide="shield-check" class="w-7 h-7"></i>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold mb-3">
+              <span>طبقة الحماية 3</span>
+            </div>
+            <h3 class="text-xl font-black text-white mb-3">موثوقية التوقيت وسجل الجهاز</h3>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed mb-4">
+              منظومة تدقيق سحابية تضمن عدم التلاعب بالساعة أو مشاركة الحسابات على أجهزة متعددة.
+            </p>
+            <ul class="text-xs sm:text-sm text-slate-100 font-medium space-y-3 mb-6">
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-purple-400 flex-shrink-0"></i>
+                <span>ربط وقت البصمة بساعة السيرفر السحابي لا بساعة الهاتف.</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-purple-400 flex-shrink-0"></i>
+                <span>استحالة تزوير الوقت بتغيير إعدادات وقت وتاريخ الهاتف.</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-purple-400 flex-shrink-0"></i>
+                <span>تتبع بصمة الجهاز (Device Footprint) لكشف مشاركة الحسابات.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-purple-500/30 text-xs text-purple-300 font-mono font-bold shadow-md">
+            Status: Cloud NTP Timestamp Locked ✓
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 5. SECTION 3: EXPANDED FEATURE DEEP-DIVE (INTERACTIVE TABS) -->
+  <!-- ======================================================== -->
+  <section id="features-section" class="relative z-10 py-24 border-t border-white/5 bg-[#070b12]/85 ">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14 section-spotlight">
+        <span class="px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider badge-glow">
+          إمكانيات غير محدودة
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-5xl font-black text-white leading-tight">
+          منظومة متكاملة لراحة <span class="text-gradient-emerald">الإدارة وسلاسة الموظف</span>
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
+          تنقل بين التبويبات التالية لاستكشاف تفاصيل الأدوات المخصصة لكل طرف في منظومة عملك:
+        </p>
+      </div>
+
+      <!-- Interactive Tabs Switcher -->
+      <div class="flex items-center justify-center gap-2 sm:gap-4 max-w-2xl mx-auto mb-12 p-1.5 rounded-2xl bg-slate-900/90 border border-white/10 shadow-xl">
+        <button class="tab-btn active flex-1 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-transparent shadow-sm" data-target="tab-admin">
+          <i data-lucide="shield" class="w-4 h-4"></i>
+          <span>لأصحاب الشركات والـ HR</span>
+        </button>
+        <button class="tab-btn flex-1 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-transparent text-slate-300 hover:text-white" data-target="tab-employee">
+          <i data-lucide="user" class="w-4 h-4"></i>
+          <span>لتجربة الموظف اليومية</span>
+        </button>
+        <button class="tab-btn flex-1 py-3 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-transparent text-slate-300 hover:text-white" data-target="tab-whatsapp">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>منظومة واتساب المؤتمتة</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="max-w-6xl mx-auto">
+        
+        <!-- TAB 1: ADMIN CONTROL CENTER -->
+        <div id="tab-admin" class="tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="activity" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">رادار الحضور اللحظي (Live Radar Feed)</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              شاشة مركزية تعرض لك مباشرة من حضر في الموعد، من تأخر بالدقائق، ومن تغيب، مع استعراض صور الحضور الحية ومواقعهم الجغرافية بدقة في نفس اللحظة.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="calendar-clock" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">إدارة الشفتات والورديات المتعددة</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              تحديد مرن للشفتات: دوام صباحي، مسائي، ليلي، ساعات عمل مرنة، أو شفتات مجزأة لكل فرع وموظف على حدة مع تحديد أيام العطلات الأسبوعية.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="sliders" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">قواعد الخصومات والإضافي المخصصة</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              تحديد دقائق السماح المعتمدة (مثلاً 15 دقيقة)، ولائحة الخصومات التصاعدية (ربع يوم، نصف يوم، يوم كامل)، وحساب ساعات العمل الإضافي (Overtime Multipliers) تلقائياً.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="file-check-2" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">دورة موافقات الإجازات والأذونات</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              يقدم الموظف طلب إذن خروج، إجازة سنوية/مرضية، أو طلب تصحيح حضور، ليظهر إشعار فوري للمدير للموافقة أو الرفض بنقرة واحدة مع خصم الرصيد تلقائياً.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="file-spreadsheet" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">مسيرات الرواتب بضغطة زر (Excel & PDF)</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              استخراج كشوف الرواتب الشهرية والبدلات والخصومات والسلف بصيغ إكسيل أو تقارير PDF مفصلة جاهزة للطباعة والتحويل البنكي فوراً دون أي مجهود يدوي.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="map" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">إدارة الفروع المتعددة والمواقع الجغرافية</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              أضف أي عدد من الفروع والمستودعات والمواقع الميدانية، وعيّن موظفين محددين لكل فرع مع تحديد الإحداثيات ونطاق الحضور الجغرافي المستقل لكل موقع.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- TAB 2: EMPLOYEE EXPERIENCE -->
+        <div id="tab-employee" class="tab-content hidden grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-cyan-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">إثبات الحضور في 3 ثوانٍ فقط</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              تجربة استخدام غاية في البساطة: يفتح الموظف التطبيق من هاتفه -> يتحقق النظام تلقائياً من الموقع الجغرافي -> يلتقط سيلفي سريع -> يتم تسجيل الحضور في ثوانٍ.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-cyan-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="eye" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">سجل شهري شفاف يمنع النزاعات</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              يستطيع الموظف متابعة سجل حضوره اليومي، ساعات التأخير، الأيام المحسوبة، وإنذارات الخصم بنفسه أولاً بأول، مما يقضي على أي شكاوى عند صرف المرتب.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-cyan-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="smartphone" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">تطبيق PWA بدون تحميل مساحات ثقيلة</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              يعمل كتطبيق هاتف أصلي خفيف جداً يثبته الموظف مباشرة على شاشة الآيفون أو الأندرويد، بدون الحاجة لتنزيل تطبيقات ثقيلة تستهلك الذاكرة أو تتطلب تحديثات متكررة.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- TAB 3: WHATSAPP ECOSYSTEM -->
+        <div id="tab-whatsapp" class="tab-content hidden grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-purple-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="bell-ring" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">إشعارات يومية فورية للإدارة</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              تلقي ملخصات ذكية عبر واتساب لإبلاغ الإدارة بنسبة الحضور اليومية وقائمة المتأخرين والمتغيبين دون الحاجة لفتح لوحة التحكم باستمرار.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-purple-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="receipt" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">إرسال مفردات الراتب للموظف تلقائياً</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              إمكانية إرسال كشوف الحضور ومسيرات المرتبات الشهرية (Payslips) للموظفين مباشرة على محادثات واتساب الشخصية بضغطة زر واحدة بكل خصوصية وأمان.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-purple-500/40 transition-all shadow-lg">
+            <div class="w-12 h-12 rounded-2xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-4 shadow-md">
+              <i data-lucide="headphones" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white mb-2 card-title-focus">تفعيل ودعم بشري 1-on-1 مباشر</h4>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed">
+              قناة تواصل فورية عبر الرقم المخصص <strong class="text-emerald-400 font-bold">01093320211</strong> لتفعيل الحسابات، تدريب فريق العمل، وحل أي استفسارات تقنية في أي وقت.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 6. SECTION 4: INTERACTIVE ROI & COST-SAVINGS CALCULATOR -->
+  <!-- ======================================================== -->
+  <section id="calculator-section" class="relative z-10 py-24 border-t border-white/5 bg-[#070b12]/85 ">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 section-spotlight">
+        <span class="px-4 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider badge-glow">
+          دراسة الجدوى والعائد الاستثماري
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-5xl font-black text-white leading-tight">
+          حاسبة الوفر المالي لشركتك <span class="text-gradient-emerald">مع وقتي</span>
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
+          حرّك المؤشرات أدناه وشاهد كم ستوفر مؤسستك سنوياً مقارنة بتكاليف أجهزة البصمة المادية والأسلاك والصيانة:
+        </p>
+      </div>
+
+      <!-- Interactive Calculator Card -->
+      <div class="max-w-4xl mx-auto glass-panel p-6 sm:p-10 rounded-3xl border border-emerald-500/30 shadow-2xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Sliders Side -->
+          <div class="lg:col-span-6 space-y-6">
+            <!-- Branches Slider -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-sm sm:text-base font-bold text-white">عدد الفروع أو مواقع العمل:</label>
+                <span id="branches-val-display" class="px-3.5 py-1 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono font-black text-sm sm:text-base shadow-sm">3 فروع</span>
+              </div>
+              <input type="range" id="branches-slider" min="1" max="10" value="3" step="1" />
+              <div class="flex justify-between text-xs text-slate-300 mt-1 font-mono font-bold">
+                <span>فرع 1</span>
+                <span>5 فروع</span>
+                <span>10 فروع</span>
+              </div>
+            </div>
+
+            <!-- Employees Slider -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-sm sm:text-base font-bold text-white">إجمالي عدد الموظفين:</label>
+                <span id="employees-val-display" class="px-3.5 py-1 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 font-mono font-black text-sm sm:text-base shadow-sm">35 موظف</span>
+              </div>
+              <input type="range" id="employees-slider" min="5" max="200" value="35" step="5" />
+              <div class="flex justify-between text-xs text-slate-300 mt-1 font-mono font-bold">
+                <span>5 موظفين</span>
+                <span>100 موظف</span>
+                <span>200 موظف</span>
+              </div>
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-white/10 text-xs sm:text-sm text-slate-200 leading-relaxed space-y-2">
+              <div class="flex items-center gap-2 text-white font-bold text-sm">
+                <i data-lucide="info" class="w-4 h-4 text-emerald-400"></i>
+                <span>أساس المقارنة والحساب:</span>
+              </div>
+              <p>تشمل التكلفة التقليدية: شراء أجهزة بصمة مادية (<strong class="text-white">8,000 ج.م/جهاز</strong>) + تمديدات وشبكات وتركيب (<strong class="text-white">2,000 ج.م</strong>) + صيانة دورية سنوية (<strong class="text-white">2,000 ج.م/فرع</strong>).</p>
+            </div>
+          </div>
+
+          <!-- Comparison Results Side -->
+          <div class="lg:col-span-6 p-6 sm:p-7 rounded-2xl bg-slate-900/95 border border-white/15 flex flex-col justify-between shadow-xl">
+            <div>
+              <div class="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+                <span class="text-xs sm:text-sm text-slate-300 font-bold">التكلفة التقليدية التقريبية:</span>
+                <span id="calc-traditional-cost" class="text-xl sm:text-2xl font-black text-rose-400 font-mono">36,000 ج.م</span>
+              </div>
+
+              <div class="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+                <span class="text-xs sm:text-sm text-slate-300 font-bold">تكلفة باقة وقتي السنوية:</span>
+                <span id="calc-waqty-cost" class="text-xl sm:text-2xl font-black text-emerald-400 font-mono">600 ج.م / سنة</span>
+              </div>
+
+              <!-- Big Savings Display -->
+              <div class="my-6 text-center p-6 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 shadow-lg shadow-emerald-500/10">
+                <span class="text-xs sm:text-sm text-emerald-300 font-bold block mb-1">إجمالي الوفر المالي المباشر لمؤسستك:</span>
+                <div id="calc-total-savings" class="text-4xl sm:text-5xl font-black text-emerald-400 font-mono tracking-tight drop-shadow-[0_0_25px_rgba(16,185,129,0.4)]">
+                  35,400 ج.م
+                </div>
+                <div class="mt-2.5 text-xs sm:text-sm font-bold text-slate-200">
+                  نسبة وفر مالي مباشر: <span id="calc-percent-savings" class="text-emerald-300 font-mono font-black text-base sm:text-lg">98%</span> 🔥
+                </div>
+              </div>
+            </div>
+
+            <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D9%82%D9%85%D8%AA%20%D8%A8%D8%AD%D8%B3%D8%A7%D8%A8%20%D8%A7%D9%84%D9%88%D9%81%D8%B1%20%D9%84%D8%B4%D8%B1%D9%83%D8%AA%D9%8A%20%D9%88%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%AA%D9%81%D8%B9%D9%8A%D9%84%20%D8%A7%D9%84%D9%86%D8%B8%D8%A7%D9%83" target="_blank"
+               class="neon-glow-btn w-full py-3.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all text-center">
+              <span>تفعيل اشتراك شركتك وتوفير التكاليف فوراً</span>
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 7. SECTION 5: DETAILED INTERACTIVE PRICING TABLE -->
+  <!-- ======================================================== -->
+  <section id="pricing-section" class="relative z-10 py-24 border-t border-white/5 bg-[#070b12]/85">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 section-spotlight">
+        <span class="px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider badge-glow">
+          باقات تناسب الجميع
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-5xl font-black text-white leading-tight">
+          باقات وأسعار اشتراك <span class="text-gradient-emerald">نظام وقتي (WAQTY)</span>
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
+          أسعار ثابتة ومناسبة بدون أي رسوم خفية أو تكاليف أجهزة إضافية، مع تفعيل مباشر عبر واتساب:
+        </p>
+      </div>
+
+      <!-- Pricing Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        
+        <!-- 1. Monthly -->
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-white/10 flex flex-col justify-between hover:border-emerald-500/50 transition-all shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-200 border border-white/10">شهري</span>
+              <i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <h4 class="font-bold text-lg text-white card-title-focus">الباقة الشهرية</h4>
+            <div class="my-3">
+              <span class="text-3xl sm:text-4xl font-black text-white font-mono">75</span>
+              <span class="text-xs text-slate-300 font-bold mr-1">ج.م / 30 يوم</span>
+            </div>
+            <ul class="text-xs sm:text-sm text-slate-200 font-medium space-y-2.5 mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span><strong class="text-white">عدد لا محدود</strong> من الموظفين</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>إثبات الحضور بالـ GPS والصورة</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>مسير رواتب وخصومات تلقائية</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>دعم فني مخصص ومستمر</span></li>
+            </ul>
+          </div>
+          <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A7%D9%84%D8%B4%D9%87%D8%B1%D9%8A%D8%A9%20(75%20%D8%AC.%D9%85)" target="_blank"
+             class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>تفعيل عبر واتساب</span>
+          </a>
+        </div>
+
+        <!-- 2. Quarterly -->
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-white/10 flex flex-col justify-between hover:border-emerald-500/50 transition-all shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">ربع سنوي</span>
+              <span class="text-xs font-bold text-amber-300">باقة 90 يوم</span>
+            </div>
+            <h4 class="font-bold text-lg text-white card-title-focus">باقة 3 أشهر</h4>
+            <div class="my-3">
+              <span class="text-3xl sm:text-4xl font-black text-white font-mono">180</span>
+              <span class="text-xs text-slate-300 font-bold mr-1">ج.م / 90 يوم</span>
+            </div>
+            <ul class="text-xs sm:text-sm text-slate-200 font-medium space-y-2.5 mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span><strong class="text-white">كل مميزات</strong> الباقة الشهرية</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>تقارير وتحليلات متقدمة</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>استقرار واحتفاظ بالأرشيف</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>أولوية دعم فني سريع</span></li>
+            </ul>
+          </div>
+          <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%A8%D8%A7%D9%82%D8%A9%203%20%D8%A3%D8%B4%D9%87%D8%B1%20(180%20%D8%AC.%D9%85)" target="_blank"
+             class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>تفعيل عبر واتساب</span>
+          </a>
+        </div>
+
+        <!-- 3. Semi-Annual (25% Discount) -->
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-purple-500/40 flex flex-col justify-between relative overflow-hidden bg-purple-950/20 shadow-lg">
+          <div class="absolute -top-3 left-3 px-2.5 py-0.5 rounded-full bg-purple-600 text-white text-[10px] font-black uppercase shadow-md">
+            خصم 25% 🔥
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-500/25 text-purple-200 border border-purple-500/40">نصف سنوي</span>
+              <span class="text-xs font-bold text-purple-300">وفر 100 ج.م</span>
+            </div>
+            <h4 class="font-bold text-lg text-white card-title-focus">باقة 6 أشهر</h4>
+            <div class="my-3 flex items-baseline gap-2">
+              <span class="text-3xl sm:text-4xl font-black text-white font-mono">300</span>
+              <span class="text-xs text-slate-300 font-bold">ج.م / 180 يوم</span>
+              <span class="text-sm text-slate-400 line-through font-mono">400</span>
+            </div>
+            <ul class="text-xs sm:text-sm text-slate-200 font-medium space-y-2.5 mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span><strong class="text-white">كل مميزات النظام</strong> كاملة</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>إشعارات ومسيرات واتساب</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>نسخ احتياطي دوري للبيانات</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>تدريب وإعداد مجاني للمنظومة</span></li>
+            </ul>
+          </div>
+          <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%B9%D8%B1%D8%B6%20%D8%A8%D8%A7%D9%82%D8%A9%206%20%D8%A3%D8%B4%D9%87%D8%B1%20(300%20%D8%AC.%D9%85%20%D8%A8%D8%AF%D9%84%20400)" target="_blank"
+             class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/20 transition-all">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>تفعيل العرض عبر واتساب</span>
+          </a>
+        </div>
+
+        <!-- 4. Annual (Highlighted - Most Popular) -->
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-emerald-500 flex flex-col justify-between relative bg-emerald-950/30 shadow-2xl shadow-emerald-500/20 transform lg:-translate-y-2">
+          <div class="absolute -top-3.5 right-4 px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg">
+            الأكثر توفيراً ⭐
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-500/40">سنوي كامل</span>
+              <span class="text-xs font-bold text-emerald-300">وفر 200 ج.م</span>
+            </div>
+            <h4 class="font-bold text-xl text-white card-title-focus">الباقة السنوية</h4>
+            <div class="my-3 flex items-baseline gap-2">
+              <span class="text-3xl sm:text-4xl font-black text-emerald-400 font-mono">600</span>
+              <span class="text-xs text-slate-200 font-bold">ج.م / 365 يوم</span>
+              <span class="text-sm text-slate-400 line-through font-mono">800</span>
+            </div>
+            <ul class="text-xs sm:text-sm text-slate-100 font-medium space-y-2.5 mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span><strong class="text-white">راحة بال لعام كامل</strong> بدون انقطاع</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span><strong class="text-white">عدد لا نهائي</strong> من الموظفين والفروع</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>دعم فني VIP مباشر وفوري</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i> <span>كافة التحديثات والميزات مجاناً</span></li>
+            </ul>
+          </div>
+          <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%A8%D8%A7%D9%82%D8%A9%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%D8%A9%20(600%20%D8%AC.%D9%85%20%D8%A8%D8%AF%D9%84%20800)" target="_blank"
+             class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/30 transition-all">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>تفعيل الباقة السنوية الآن</span>
+          </a>
+        </div>
+
+        <!-- 5. Lifetime / Open Package -->
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border-2 border-amber-500/60 flex flex-col justify-between relative bg-amber-950/20 shadow-xl">
+          <div class="absolute -top-3.5 right-4 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 text-xs font-black uppercase tracking-wider shadow-lg">
+            مدى الحياة ♾️
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/25 text-amber-300 border border-amber-500/40">مفتوح دائم</span>
+              <span class="text-xs font-bold text-amber-300">بدون تجديد</span>
+            </div>
+            <h4 class="font-bold text-lg text-white card-title-focus">باقة مدى الحياة</h4>
+            <div class="my-3">
+              <span class="text-3xl sm:text-4xl font-black text-amber-400 font-mono">6,000</span>
+              <span class="text-xs text-slate-300 font-bold mr-1">ج.م / دفعة واحدة</span>
+            </div>
+            <ul class="text-xs sm:text-sm text-slate-200 font-medium space-y-2.5 mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="crown" class="w-4 h-4 text-amber-400 flex-shrink-0"></i> <span><strong class="text-white">اشتراك دائم ومفتوح</strong> مدى الحياة</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400 flex-shrink-0"></i> <span>عدد لا نهائي من الفروع والموظفين</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400 flex-shrink-0"></i> <span>أولوية مطلقة للدعم الفني VIP</span></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400 flex-shrink-0"></i> <span>كافة التحديثات والتطويرات مجاناً</span></li>
+            </ul>
+          </div>
+          <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%A8%D8%A7%D9%82%D8%A9%20%D9%85%D8%AF%D9%89%20%D8%A7%D9%84%D8%AD%D9%8A%D8%A7%D8%A9%20%D8%A7%D9%84%D9%85%D9%81%D8%AA%D9%88%D8%AD%D8%A9%20(6000%20%D8%AC.%D9%85)" target="_blank"
+             class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 transition-all">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>تفعيل باقة مدى الحياة</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 8. SECTION 6: EXPANDED ARABIC FAQ SECTION (ACCORDION) -->
+  <!-- ======================================================== -->
+  <section id="faq-section" class="relative z-10 py-24 border-t border-white/5 bg-[#070b12]/85">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16 section-spotlight">
+        <span class="px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-wider badge-glow">
+          إجابات وافية
+        </span>
+        <h2 class="mt-4 text-3xl sm:text-5xl font-black text-white leading-tight">
+          الأسئلة الشائعة <span class="text-gradient-cyan">والأكثر تكراراً</span>
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
+          كل ما تحتاج معرفته عن طريقة عمل وتطبيق نظام وقتي في شركتك:
+        </p>
+      </div>
+
+      <!-- Accordion Items -->
+      <div class="space-y-4">
+        
+        <!-- FAQ 1 -->
+        <div class="faq-item glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all shadow-md">
+          <button class="faq-toggle w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 font-bold text-base sm:text-lg text-white hover:text-emerald-300 transition-colors">
+            <span>كيف يمنع النظام التلاعب وتزوير المواقع (Fake GPS)؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-emerald-400 transition-transform flex-shrink-0"></i>
+          </button>
+          <div class="faq-content px-5 pb-5 sm:px-6 sm:pb-6 text-sm sm:text-base text-slate-200 font-medium leading-relaxed border-t border-white/5 pt-3">
+            يستخدم وقتي طبقات أمان صارمة؛ أولاً: يتحقق النظام سحابياً من إحداثيات الـ GPS الموثقة عبر الأقمار الصناعية ويفحص برمجياً أي محاولات لتشغيل برامج محاكاة المواقع (<strong class="text-white">Mock Location</strong>). ثانياً والأهم: يُلزم النظام الموظف بالتقاط <strong class="text-emerald-400">سيلفي حي بكاميرا الهاتف</strong> في نفس لحظة البصمة لمنع أي موظف من تسجيل الحضور نيابة عن زميله، وتظهر الصورة والموقع الحقيقي للإدارة لحظياً.
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="faq-item glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all shadow-md">
+          <button class="faq-toggle w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 font-bold text-base sm:text-lg text-white hover:text-emerald-300 transition-colors">
+            <span>هل يحتاج الموظف إنترنت قوي في مكان العمل؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-emerald-400 transition-transform flex-shrink-0"></i>
+          </button>
+          <div class="faq-content px-5 pb-5 sm:px-6 sm:pb-6 text-sm sm:text-base text-slate-200 font-medium leading-relaxed border-t border-white/5 pt-3">
+            لا إطلاقاً! تم تصميم كود «وقتي» ليكون فائق الخفة ومضغوطاً بأعلى كفاءة. يحتاج الموظف فقط لثوانٍ معدودة وباقة إنترنت خفيفة جداً (يعمل بكفاءة حتى على شبكات <strong class="text-white">3G الضعيفة أو شبكة Wi-Fi</strong> داخل مقر العمل)، فحجم بيانات البصمة والصورة أقل من بضعة كيلوبايت.
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="faq-item glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all shadow-md">
+          <button class="faq-toggle w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 font-bold text-base sm:text-lg text-white hover:text-emerald-300 transition-colors">
+            <span>هل يمكن تجربة النظام مجاناً أولاً قبل الاشتراك؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-emerald-400 transition-transform flex-shrink-0"></i>
+          </button>
+          <div class="faq-content px-5 pb-5 sm:px-6 sm:pb-6 text-sm sm:text-base text-slate-200 font-medium leading-relaxed border-t border-white/5 pt-3">
+            نعم، نوفر <strong class="text-emerald-400">فترة تجريبية مجانية كاملة الميزات</strong> لكافة الشركات والمؤسسات. يمكنك إنشاء حساب مدير جديد فوراً، وإضافة موظفيك وفروعك، وتجربة تسجيل الحضور والانصراف ومسيرات الرواتب بنفسك دون أي التزام مالي أو إدخال بطاقات دفع.
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="faq-item glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all shadow-md">
+          <button class="faq-toggle w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 font-bold text-base sm:text-lg text-white hover:text-emerald-300 transition-colors">
+            <span>كيف يتم الاشتراك والتفعيل؟ وما مدى سرعة البدء؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-emerald-400 transition-transform flex-shrink-0"></i>
+          </button>
+          <div class="faq-content px-5 pb-5 sm:px-6 sm:pb-6 text-sm sm:text-base text-slate-200 font-medium leading-relaxed border-t border-white/5 pt-3">
+            التفعيل فوري خلال أقل من <strong class="text-white">5 دقائق</strong>! بمجرد اختيار الباقة المناسبة والتواصل معنا عبر واتساب على الرقم المباشر <strong class="text-emerald-400 font-bold">01093320211</strong>، يقوم فريق الدعم الفني بتفعيل حسابك ومساعدتك في تجهيز إحداثيات فروعك ورفع قائمة موظفيك بضغطة زر.
+          </div>
+        </div>
+
+        <!-- FAQ 5 -->
+        <div class="faq-item glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all shadow-md">
+          <button class="faq-toggle w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 font-bold text-base sm:text-lg text-white hover:text-emerald-300 transition-colors">
+            <span>هل يدعم النظام الشركات التي تمتلك فروعاً متعددة وموظفين ميدانيين؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-emerald-400 transition-transform flex-shrink-0"></i>
+          </button>
+          <div class="faq-content px-5 pb-5 sm:px-6 sm:pb-6 text-sm sm:text-base text-slate-200 font-medium leading-relaxed border-t border-white/5 pt-3">
+            بكل تأكيد، هذه إحدى أقوى مميزات وقتي! يمكنك إضافة أي عدد من <strong class="text-white">الفروع والمواقع والمستودعات</strong> في مدن مختلفة، كما يدعم النظام مندوبي المبيعات والفنيين الميدانيين بحيث يسجلون حضورهم من مواقع العملاء أو المسارات الجغرافية المعتمدة لهم.
+          </div>
+        </div>
+
+        <!-- FAQ 6 -->
+        <div class="faq-item glass-panel rounded-2xl border border-white/10 overflow-hidden transition-all shadow-md">
+          <button class="faq-toggle w-full p-5 sm:p-6 text-right flex items-center justify-between gap-4 font-bold text-base sm:text-lg text-white hover:text-emerald-300 transition-colors">
+            <span>كيف يوفر النظام وقت قسم المحاسبة والموارد البشرية (HR)؟</span>
+            <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-emerald-400 transition-transform flex-shrink-0"></i>
+          </button>
+          <div class="faq-content px-5 pb-5 sm:px-6 sm:pb-6 text-sm sm:text-base text-slate-200 font-medium leading-relaxed border-t border-white/5 pt-3">
+            يقوم وقتي بأتمتة العملية الحسابية بالكامل؛ حيث يحلل ساعات العمل، التأخيرات حسب لائحة الشركة، الغياب بدون إذن، الأذونات المعتمدة، والساعات الإضافية (<strong class="text-white">Overtime</strong>) لحظياً، ويقوم بتصدير شيت الرواتب بنقرة زر بصيغة <strong class="text-emerald-400">Excel أو PDF</strong>، موفراً أكثر من <strong class="text-white">85% من الوقت المهدور شهرياً</strong>.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 9. SECTION 7: FINAL CALL TO ACTION & FOOTER -->
+  <!-- ======================================================== -->
+  <section id="contact-section" class="relative z-10 py-24 border-t border-white/5 bg-[#070b12]/85 ">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center section-spotlight">
+      
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold mb-6 badge-glow">
+        <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+        <span>ابدأ تجربة منظومة وقتي اليوم</span>
+      </div>
+
+      <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+        جاهز للتخلص من أجهزة البصمة التقليدية <span class="text-gradient-emerald">إلى الأبد؟</span>
+      </h2>
+      <p class="mt-4 text-base sm:text-lg text-slate-200 font-medium max-w-2xl mx-auto leading-relaxed">
+        انضم لعشرات الشركات التي وثّقت حضور موظفيها بأمان ووفرت آلاف الجنيهات شهرياً. فريقنا جاهز لإعداد منظومتك بالكامل في أقل من 5 دقائق.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <!-- WhatsApp Call to Action -->
+        <a href="https://wa.me/201093320211?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D9%86%D8%B8%D8%A7%D9%85%20%D9%88%D9%82%D8%AA%D9%8A%20%D9%88%D8%A8%D8%AF%D8%A1%20%D8%AA%D8%AC%D8%B1%D8%A8%D8%AA%D9%8A" target="_blank"
+           class="px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base flex items-center gap-2.5 shadow-xl shadow-emerald-500/25 transition-all transform hover:-translate-y-1">
+          <i data-lucide="message-circle" class="w-5 h-5"></i>
+          <span>محادثة فورية عبر واتساب: 01093320211</span>
+        </a>
+
+        <!-- Open Live App -->
+        <a href="https://mosaed-attendance.vercel.app/" target="_blank"
+           class="px-8 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-white font-bold text-sm sm:text-base flex items-center gap-2.5 transition-all">
+          <i data-lucide="globe" class="w-5 h-5 text-cyan-400"></i>
+          <span>فتح المنظومة المباشرة (Portal)</span>
+        </a>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="mt-20 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div class="flex items-center gap-2">
+          <img src="logo-icon.png" alt="وقتي" class="h-6 w-auto" />
+          <span>جميع الحقوق محفوظة © 2026 <strong class="text-slate-200">وقتي | WAQTY (Mosaed Attendance)</strong></span>
+        </div>
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-300">الخوادم السحابية تعمل بكفاءة 100%</span>
+          </span>
+          <span>•</span>
+          <span>هاتف الدعم: <strong class="text-emerald-400 font-mono text-sm">01093320211</strong></span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Application Scripts -->
+  <script src="screen_data.js"></script>
+  <script src="scene3d.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
